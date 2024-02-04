@@ -1,0 +1,17 @@
+﻿@model UrlViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+@if (Model.url == "")
+{
+    <form method="post" action="/">
+
+        <input name="url" placeholder="Введите ссылку, которую нужно сократить" type="text" value=""></input>
+        <input type="submit" value="Сократить"></input>
+    </form>
+}
+else
+{
+    <h1>@Model.url</h1>
+}
