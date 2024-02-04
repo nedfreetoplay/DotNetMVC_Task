@@ -18,6 +18,13 @@ public class HomeController : Controller
         this.logger = logger;
     }
 
+    public IActionResult NewRoute(string url)
+    {
+        string newUrl = dbContext.Urls.FirstOrDefault(u => u.Token == url)?.LongUrl??
+            ControllerContext.HttpContext.Request.Host.Value;
+        return RedirectPermanent(newUrl);
+    }
+
     [HttpGet]
     public IActionResult Index()
     {
