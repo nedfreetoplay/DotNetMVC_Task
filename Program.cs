@@ -30,7 +30,7 @@ app.MapControllerRoute(
 );
 app.MapControllerRoute(
     name: "route",
-    pattern: "/{url}",
+    pattern: "/{token}",
     defaults: new { controller = "Home", action = "NewRoute" }
 );
 

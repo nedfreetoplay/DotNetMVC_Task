@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using DotNetMVC_Task.Models;
 using DotNetMVC_Task.Data;
 using System.Text;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DotNetMVC_Task.Controllers;
 
@@ -18,11 +19,17 @@ public class HomeController : Controller
         this.logger = logger;
     }
 
-    public IActionResult NewRoute(string url)
+    public IActionResult NewRoute(string token)
     {
-        string newUrl = dbContext.Urls.FirstOrDefault(u => u.Token == url)?.LongUrl??
-            ControllerContext.HttpContext.Request.Host.Value;
-        return RedirectPermanent(newUrl);
+        IActionResult result;
+
+        var queryResult = dbContext.Urls.FirstOrDefault(u => u.Token == token)?.LongUrl ?? null;
+        if (queryResult == null)
+            result = NotFound();
+        else
+            result = RedirectPermanent(queryResult);
+
+        return result;
     }
 
     [HttpGet]
