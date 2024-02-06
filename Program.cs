@@ -26,12 +26,13 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "/",
-    defaults: new { controller = "Home", action = "Index" }
+    defaults: new { controller = "Main", action = "Index" }
 );
+
 app.MapControllerRoute(
     name: "route",
     pattern: "/{token}",
-    defaults: new { controller = "Home", action = "NewRoute" }
+    defaults: new { controller = "Main", action = "NewRoute" }
 );
 
 app.Run();

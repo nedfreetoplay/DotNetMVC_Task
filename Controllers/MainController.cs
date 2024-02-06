@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 using DotNetMVC_Task.Models;
 using DotNetMVC_Task.Data;
 using System.Text;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DotNetMVC_Task.Controllers;
 
-public class HomeController : Controller
+public class MainController : Controller
 {
-    private readonly ILogger<HomeController> logger;
+    private readonly ILogger<MainController> logger;
     private readonly AppDbContext dbContext;
     private static Random random = new Random();
 
-    public HomeController(AppDbContext dbContext, ILogger<HomeController> logger)
+    public MainController(AppDbContext dbContext, ILogger<MainController> logger)
     {
         this.dbContext = dbContext;
         this.logger = logger;
@@ -40,21 +39,19 @@ public class HomeController : Controller
 
     [HttpPost]
     public IActionResult Index(string url) {
-        var req = ControllerContext.HttpContext.Request;
+        var req = HttpContext.Request;
 
         logger.LogDebug($"Пришёл адрес: {url}");
         logger.LogDebug($"Путь: {req.Headers.Referer}");
 
-        var token = "";
-        if (!dbContext.Urls.Any(u => u.LongUrl ==  url))
-        {
-            token = RandomString(6); // Возможна повторяемость токенов :(
+        var recordInDb = dbContext.Urls.FirstOrDefault(u => u.LongUrl == url);
+        string token;
+        if (recordInDb == null) {
+            token = RandomString(6);
             dbContext.Urls.Add(new Url() { Token = token, LongUrl = url });
             dbContext.SaveChanges();
-        }
-        else
-        {
-            token = dbContext.Urls.FirstOrDefault(u => u.LongUrl == url).Token;
+        } else {
+            token = recordInDb.Token;
         }
 
         string fullPath = new StringBuilder()
